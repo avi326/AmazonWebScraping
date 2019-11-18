@@ -13,7 +13,7 @@ import os
 class DataMiningFromClub:
     def __init__(self, url, league_name, country_name):
         self.page_soup = get_html_from_url(url)
-        self.labels_with_value_list = []
+        self.labels_with_value_dict = {}
         self.league_name = league_name
         self.country_name = country_name
 
@@ -61,7 +61,7 @@ class DataMiningFromClub:
                 yellow_cards_list.append(player.findAll("td")[5].text)
                 red_cards_list.append(player.findAll("td")[6].text)
 
-            self.labels_with_value_list = {"Country": country_list,
+            self.labels_with_value_dict = {"Country": country_list,
                                            "League": league_list,
                                            "Club Name": club_name_list,
                                            "Jersey Number": jersey_numbers_list,
@@ -78,21 +78,21 @@ class DataMiningFromClub:
             print("problem on get players stats. ")
             # print(meg)
 
-        return self.labels_with_value_list
+        return self.labels_with_value_dict
 
     def output_to_csv(self):
         """
             get the players data and output to csv file
         """
         # create CSV file by pandas
-        df = pd.DataFrame(self.labels_with_value_list)
-
-        # if file does not exist write header
-        csv_file_name = 'Players Stats.csv'
-        if not os.path.isfile(csv_file_name):
-            df.to_csv(csv_file_name)
-        else:  # else it exists so append without writing the header
-            df.to_csv(csv_file_name, mode='a', header=False)
+        df = pd.DataFrame(self.labels_with_value_dict)
+        if not df.empty:
+            # if file does not exist write header
+            csv_file_name = 'Players Stats.csv'
+            if not os.path.isfile(csv_file_name):
+                df.to_csv(csv_file_name)
+            else:  # else it exists so append without writing the header
+                df.to_csv(csv_file_name, mode='a', header=False)
         return
 
 
