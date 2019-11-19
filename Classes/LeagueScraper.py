@@ -22,7 +22,7 @@ class GetLeagueUrls:
 
     def get_league_name(self):
         """ return the name of league. """
-        league_idx = 1
+        league_idx = 2
         league_name = self.selenium_driver.find_element_by_class_name("tournament").find_elements(By.TAG_NAME, "a")[
             league_idx].text.title()
         return league_name
