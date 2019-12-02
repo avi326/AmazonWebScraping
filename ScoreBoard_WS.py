@@ -1,10 +1,9 @@
-from Classes import LeagueScraper, ClubScraper, CountriesScraper
+"""
+    this program call all relevant classes to scrap main url and print stat to file
+"""
+
+from .Classes import LeagueScraper, ClubScraper, CountriesScraper
 from tqdm import tqdm
-
-
-def test():
-    # TODO some tests
-    return
 
 
 def main():
@@ -25,9 +24,8 @@ def main():
             temp_club.get_players_data()
             temp_club.output_to_csv()
 
-    return
+    return temp_club.get_players_data(), temp_club.output_to_csv()
 
 
 if __name__ == "__main__":
-    test()
     main()

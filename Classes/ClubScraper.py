@@ -1,6 +1,5 @@
 """
-    this program does web scraping from a specific football club.
-
+this program does web scraping and extract data from specific football club.
 """
 
 # import packages
@@ -19,7 +18,9 @@ class DataMiningFromClub:
 
     def get_players_data(self):
         """
-            get page soup object and take the data about each player
+        get page soup object and take the data about each player
+        :return: dictionary labels_with_value_dict
+
         """
 
         # get club name
@@ -82,7 +83,8 @@ class DataMiningFromClub:
 
     def output_to_csv(self):
         """
-            get the players data and output to csv file
+        get the players data and output to csv file
+        return also dataframe
         """
         # create CSV file by pandas
         df = pd.DataFrame(self.labels_with_value_dict)
@@ -93,12 +95,12 @@ class DataMiningFromClub:
                 df.to_csv(csv_file_name)
             else:  # else it exists so append without writing the header
                 df.to_csv(csv_file_name, mode='a', header=False)
-        return
+        return df
 
 
 def get_html_from_url(url):
     """
-        get bs4 object that contain html data
+    :returns bs4 object that contain html data
     """
     # TODO timeout int list
 
@@ -114,7 +116,7 @@ def get_html_from_url(url):
 
     # URl to web scrap from.
     # scrap from scoreboard.com (football statistics website)
-    page_url = url
+    page_url = URL
 
     # opens the connection and downloads html page from url
     u_client = requests.get(page_url, headers=headers, timeout=5)

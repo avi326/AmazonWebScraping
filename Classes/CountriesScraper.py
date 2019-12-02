@@ -1,15 +1,13 @@
+"""
+this program extract urls for each country and premier leagues.
+"""
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
 import requests
-import csv
-import re
-
-
-# todo: add CL input option
 
 
 class SBScraper(object):
@@ -32,9 +30,10 @@ class SBScraper(object):
 
     def load_url(self):
         """
-        function loads url and wait certain amount of time to load bottom page stats.
-        if it doesn't find the link the function call link checker().
+        function call extract_url to loads url list and wait certain amount of time to load bottom page stats.
+        and debug url string that varies between countries.
         """
+
         links = self.extract_urls()
         for i in range(len(links)):
             try:
@@ -53,6 +52,8 @@ class SBScraper(object):
     def extract_urls(self):
         """
         loop through html and extract countries and links for primer league
+        :param url, country (list)
+        :returns list of urls for further scrapping
         """
         url_list = []
         country_list = []
@@ -87,9 +88,6 @@ class SBScraper(object):
 
         return url_list
 
-    def extract_info(self):
-        self.load_url()
-
     def drive_exit(self):
         """
         closing Chrome driver
@@ -107,7 +105,6 @@ def main():
     urls = scraper.extract_urls()
     print(urls)
     print(len(urls))
-    scraper.extract_info()
     scraper.drive_exit()
 
 

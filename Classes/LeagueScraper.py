@@ -1,35 +1,37 @@
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-from bs4 import BeautifulSoup
-import requests
-import csv
-import re
+"""
+this program split urls to each specific football club/league/country.
+"""
 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import configWS
 
 class GetLeagueUrls:
     def __init__(self, url):
         self.selenium_driver = get_data_from_url(url)
 
     def get_country_name(self):
-        """ return the name of country. """
-        country_idx = 1
+        """
+        return: the name of country.
+        """
+        # c_idx = COUNTRY_IDX
+        c_idx = 1
         country_name = self.selenium_driver.find_element_by_class_name("tournament").find_elements(By.TAG_NAME, "a")[
-            country_idx].text.title()
+            c_idx].text.title()
         return country_name
 
     def get_league_name(self):
         """ return the name of league. """
-        league_idx = 2
+        # l_idx = LEAGUE_IDX
+        l_idx = 2
         league_name = self.selenium_driver.find_element_by_class_name("tournament").find_elements(By.TAG_NAME, "a")[
-            league_idx].text.title()
+            l_idx].text.title()
         return league_name
 
     def get_club_urls_list(self):
         """
-            get selenium driver of league page. return club urls list and league name.
+        :param:url_of_club get selenium driver of league page.
+        :returns club urls list and league name.
         """
         club_urls_list = []
 
@@ -43,14 +45,17 @@ class GetLeagueUrls:
         return club_urls_list
 
     def close_get_data(self):
-        """     close the connect to url     """
+        """
+        close the connect to url
+        """
 
         self.selenium_driver.close()
 
 
 def get_data_from_url(url):
     """
-    function loads url and return object that contain all html data.
+    :param:selenium_driver function loads url
+    :return object that contain all html data.
     """
     selenium_driver = webdriver.Chrome()
     selenium_driver.get(url)
