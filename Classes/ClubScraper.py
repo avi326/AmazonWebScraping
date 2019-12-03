@@ -32,10 +32,10 @@ class DataMiningFromClub:
 
         try:
             # finds each player from the club page
-            players_list = self.selenium_driver.find_element_by_class_name('base-table').find_elements(By.CLASS_NAME,                                                                                      'player')
-
+            players_list = self.selenium_driver.find_element_by_class_name('base-table').find_elements(By.CLASS_NAME,
+                                                                                                       'player')
             # TODO print message if there isn't players data.
-            
+
             # init list for saving details
             country_list = []
             league_list = []
