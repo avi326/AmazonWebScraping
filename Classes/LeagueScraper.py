@@ -3,10 +3,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
-from bs4 import BeautifulSoup
-import requests
-import csv
-import re
 
 
 class GetLeagueUrls:
@@ -38,14 +34,10 @@ class GetLeagueUrls:
             onclick_atr = club_elm.find_elements(By.TAG_NAME, "td")[1].find_element(By.TAG_NAME, "a").get_attribute(
                 "onclick")
             url_of_club = onclick_atr.split("'/")[1].split(r"\'")[0][:-3]
-            club_urls_list.append("https://www.scoreboard.com/" + url_of_club)
+            full_url_of_club = "https://www.scoreboard.com/" + url_of_club + "squad"
+            club_urls_list.append(full_url_of_club)
 
         return club_urls_list
-
-    def close_get_data(self):
-        """     close the connect to url     """
-
-        self.selenium_driver.close()
 
 
 def get_data_from_url(url):

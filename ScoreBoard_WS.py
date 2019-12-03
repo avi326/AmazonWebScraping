@@ -15,9 +15,9 @@ def main():
     # get club list for each state
     for url in tqdm(urls):
         league_to_scraping = LeagueScraper.GetLeagueUrls(url)
-        premier_league_clubs = league_to_scraping.get_club_urls_list()
         league_name = league_to_scraping.get_league_name()
         country_name = league_to_scraping.get_country_name()
+        premier_league_clubs = league_to_scraping.get_club_urls_list()
 
         # get data for each player in this club
         for club in premier_league_clubs:
