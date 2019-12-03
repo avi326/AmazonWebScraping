@@ -6,4 +6,4 @@ ARG_OPTION = 1
 ARG_FILE_NAME = 2
 PRINT = -1
 
-
+'should add to .gitignore under *configWS.py'

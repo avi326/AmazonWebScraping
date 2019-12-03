@@ -1,13 +1,22 @@
 """
 this program extract urls for each country and premier leagues.
 """
-
+import configWS
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import requests
+
+import time
+
+chrome_options = Options()
+chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--headless")
+driver = webdriver.Chrome(executable_path='/Applications/chromedriver 2', options=chrome_options)
 
 
 class SBScraper(object):
@@ -19,7 +28,7 @@ class SBScraper(object):
         self.country = country
         self.league = league
         self.team = team
-        self.url = 'https://www.scoreboard.com/en/soccer/'
+        self.url = MAIN_URL
         self.driver = webdriver.Chrome()
         self.delay = 5
         self.sub_url = f"{self.url}{country}/{league}/{team}"
@@ -63,19 +72,22 @@ class SBScraper(object):
             country_list.append('-'.join(i.text.split()).lower())
         country_list = country_list[7:-8]
 
-        # todo: for leagues var, automate browsing with simulated clicks (for auto leagues extraction)
-        # url_list = []
-        # lmenu = []
-        # for i in soup.find_all('ul', class_='menu-left')[2:]:
-        #     for j in i.find_all('li'):
-        #         lmenu.append(j['id'])
-        # for l in lmenu:
-        #     driver.find_element_by_xpath(f"//li[@id='lmenu_230']").click()
-        #     time.sleep(5)
-        #     driver.find_element_by_xpath(f"//li[@class='last']").click()
-        #     time.sleep(5)
-        #     url_list.append(driver.current_url)
-        #     url_list
+        lmenu = []
+        for i in self.soup.find_all('ul', class_='menu-left')[2:]:
+            for j in i.find_all('li'):
+                lmenu.append(j['id'])
+
+        driver = webdriver.Chrome(executable_path='/Applications/chromedriver 2', options=chrome_options)
+        driver.get(MAIN_URL)
+        links = []
+        url_list = []
+        for l in lmenu[0:5]:
+            driver.find_element_by_xpath(f"//li[@id='{l}']").click()
+            time.sleep(3)
+            links.append(driver.find_element_by_class_name('last').find_element_by_xpath(f'//*[@id="{l}"]/ul/li/a'))
+        for link in links:  # [:-8]:
+            print(link.get_attribute('href'))
+        driver.close()
 
         leagues_america = ['Premier-League', 'Canadian-Premier-League', 'Primera-Division', 'LDF', 'Primera-Division',
                            'Liga-Nacional', 'Championnat-National', 'liga-nacional', 'Premier-League', 'Liga-MX',
