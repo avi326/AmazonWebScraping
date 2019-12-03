@@ -1,7 +1,8 @@
 """
 this program extract urls for each country and premier leagues.
 """
-import configWS
+
+# import configWS
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -9,14 +10,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import requests
-
 import time
+
+URL = 'https://www.scoreboard.com/en/soccer/'
+COUNTRY_IDX = 1
+URL_IDX = 0
 
 chrome_options = Options()
 chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--headless")
-driver = webdriver.Chrome(executable_path='/Applications/chromedriver 2', options=chrome_options)
 
 
 class SBScraper(object):
@@ -24,15 +27,14 @@ class SBScraper(object):
     class will get from CL (or elsewhere) name of country team or league and will get the stats of game or player '''
     """
 
-    def __init__(self):
+    def __init__(self, country='', league='', team=''):
         self.country = country
         self.league = league
         self.team = team
-        self.url = MAIN_URL
-        self.driver = webdriver.Chrome()
+        self.url = URL
+        self.driver = webdriver.Chrome(executable_path='/Applications/chromedriver 2', options=chrome_options)
         self.delay = 5
         self.sub_url = f"{self.url}{country}/{league}/{team}"
-
         self.driver.get(self.url)
         self.source = requests.get(self.url).text
         self.soup = BeautifulSoup(self.source, 'html.parser')
@@ -43,7 +45,7 @@ class SBScraper(object):
         and debug url string that varies between countries.
         """
 
-        links = self.extract_urls()
+        links = self.extract_urls()[URL_IDX]
         for i in range(len(links)):
             try:
                 self.driver.get(links[i])
@@ -64,9 +66,8 @@ class SBScraper(object):
         :param url, country (list)
         :returns list of urls for further scrapping
         """
-        url_list = []
-        country_list = []
 
+        country_list = []
         el = self.driver.find_elements_by_xpath('//a[contains(@href,"/en/soccer/")]')
         for i in el:
             country_list.append('-'.join(i.text.split()).lower())
@@ -77,28 +78,25 @@ class SBScraper(object):
             for j in i.find_all('li'):
                 lmenu.append(j['id'])
 
-        driver = webdriver.Chrome(executable_path='/Applications/chromedriver 2', options=chrome_options)
-        driver.get(MAIN_URL)
-        links = []
         url_list = []
-        for l in lmenu[0:5]:
-            driver.find_element_by_xpath(f"//li[@id='{l}']").click()
-            time.sleep(3)
-            links.append(driver.find_element_by_class_name('last').find_element_by_xpath(f'//*[@id="{l}"]/ul/li/a'))
-        for link in links:  # [:-8]:
-            print(link.get_attribute('href'))
-        driver.close()
+        links = []
+        for l in lmenu:
+            self.driver.find_element_by_xpath(f"//li[@id='{l}']").click()
+            time.sleep(5)
+            links.append(
+                self.driver.find_element_by_class_name('last').find_element_by_xpath(f'//*[@id="{l}"]/ul/li/a'))
+        for link in links:
+            url_list.append(link.get_attribute('href'))
 
-        leagues_america = ['Premier-League', 'Canadian-Premier-League', 'Primera-Division', 'LDF', 'Primera-Division',
-                           'Liga-Nacional', 'Championnat-National', 'liga-nacional', 'Premier-League', 'Liga-MX',
-                           'Liga-Primera', 'LPF', 'Pro-League', 'MLS', 'Superliga', 'Division-di-Honor',
-                           'Division-Profesional', 'Serie-A', 'Primera-Division', 'Liga-Aguila', 'Liga-Pro',
-                           'Primera-Division', 'Liga-1', 'Primera-Division', 'Primera-Division']
+        # leagues_america = ['Premier-League', 'Canadian-Premier-League', 'Primera-Division', 'LDF', 'Primera-Division',
+        #                    'Liga-Nacional', 'Championnat-National', 'liga-nacional', 'Premier-League', 'Liga-MX',
+        #                    'Liga-Primera', 'LPF', 'Pro-League', 'MLS', 'Superliga', 'Division-di-Honor',
+        #                    'Division-Profesional', 'Serie-A', 'Primera-Division', 'Liga-Aguila', 'Liga-Pro',
+        #                    'Primera-Division', 'Liga-1', 'Primera-Division', 'Primera-Division']
+        # for i in range(len(links)):
+        #     url_list.append(self.url + country_list[i] + '/' + leagues_america[i].lower())
 
-        for i in range(len(leagues_america)):
-            url_list.append(self.url + country_list[i] + '/' + leagues_america[i].lower())
-
-        return url_list
+        return url_list[:-8], country_list
 
     def drive_exit(self):
         """
@@ -107,17 +105,12 @@ class SBScraper(object):
         self.driver.close()
 
 
-country = 'bermuda'
-league = 'Premier-League'
-team = ''
-
-
 def main():
     scraper = SBScraper()
-    urls = scraper.extract_urls()
+    urls = scraper.extract_urls()[URL_IDX]
+    # countries = scraper.extract_urls()[COUNTRY_IDX]
+
     print(urls)
-    print(len(urls))
-    scraper.drive_exit()
 
 
 if __name__ == '__main__':

@@ -9,21 +9,24 @@ import sqlite3
 import os
 import random
 import tqdm
+REQUIRED_NUM_OF_ARGS = 3
+ARG_OPTION = 1
+ARG_FILE_NAME = 2
 
 
-
-
-
-def ws_summary(query, name):
+def ws_summary(query, *args):
     """
     function gets arg from user and returns relevant info
     """
-    func_dict = {'country': ScoreBoard_WS.main().temp_club.get_players_data()}
-    #              'league': league,
-    #              'team': team,
-    #              'player': player}
+    FILE = 'name of file'
+    CLASS = 'name of class'
+    args = 'name of country/club/player'
 
-    return func_dict[query].name
+    func_dict = {'player': FILE.get_players_data(),
+                 'club': FILE.CLASS.get_club_data(),
+                 'country': FILE.CLASS.get_country_data()}
+
+    return func_dict[query].args
 
 
 # Parse arguments
@@ -31,17 +34,21 @@ def ws_summary(query, name):
 parser = argparse.ArgumentParser(description="Print Soccer (team|player) stats following CL args")
 
 parser.add_argument("query", help="choose your query you like to check", choices={'country', 'league', 'team', 'player'})
-parser.add_argument("-name", help="Print Summary File for arg", action="store_true")
-args = parser.parse_args()
+parser.add_argument("-name", help="Print Summary File for specific query", action="store_true")
+# parser.add_argument("-name", help="Print Summary File for arg", action="store_true")
+# parser.add_argument("-name", help="Print Summary File for arg", action="store_true")
+# parser.add_argument("-name", help="Print Summary File for arg", action="store_true")
+arg = parser.parse_args()
 
 
-if args.name:
-    qs = ['country']#, 'league', 'team', 'player']
+if arg.query:
+    qs = ['player', 'league', 'team', 'country']
     for q in qs:
-        print(ws_summary(args, q))
-else:
+        print(ws_summary(q))
+
+elif arg.team:
     try:
-        result = ws_summary(args.query)
+        result = ws_summary(arg.query)
         print(result)
     except:
         print("usage: ./FILE.py { [query] | -name } ")
@@ -56,12 +63,10 @@ try:
     filename = sys.argv[ARG_FILE_NAME]
 except:
     print("Input file doesn't exist, please check and run again...")
-if option == "-all":
-    print(...)
 
-elif option == "-player":
+if option == "-player":
     print(...)
-elif option == "-team":
+elif option == "-club":
     print(...)
 elif option == "-league":
     print(...)
