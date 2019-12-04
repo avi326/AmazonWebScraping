@@ -25,8 +25,8 @@ def main():
     parser.add_argument("query", nargs='+', type=str, help="Choose your query you like to check")
     args = parser.parse_args()
 
-    NAME = args.query[ARG_NAME]
-    QUERY = args.query[ARG_OPTION]
+    name = args.query[ARG_NAME]
+    query = args.query[ARG_OPTION]
 
     # Parse arguments
     if len(sys.argv) != REQUIRED_NUM_OF_ARGS:
@@ -34,14 +34,14 @@ def main():
         sys.exit(1)
 
     # checking inputs valid value
-    if QUERY not in ['Country', 'Club Name', 'Name']:
+    if query not in ['Country', 'Club Name', 'Name']:
         print('please provide a valid query to look into, as stats for [countries|clubs|players].')
 
-    if not NAME:
+    if not name:
         print(f'please provide a valid name for query to look into')
 
     # call function to print query
-    print(f'Stats for the {QUERY}-{NAME}/n{DATA[DATA[QUERY].str.contains(NAME.title())]}\n')
+    print(f'Stats for the {query}-{name}/n{DATA[DATA[query].str.contains(name.title())]}\n')
 
 
 if __name__ == '__main__':
