@@ -1,4 +1,5 @@
 from Classes import LeagueScraper, ClubScraper, CountriesScraper
+from Database import Database
 from tqdm import tqdm
 
 
@@ -24,6 +25,12 @@ def main():
             temp_club = ClubScraper.DataMiningFromClub(club, league_name, country_name)
             temp_club.get_players_data()
             temp_club.output_to_csv()
+
+    # convert the csv file to tables in database
+    db = Database.Database()
+    # db.insert_values() #TODO insert to database by user command line (if did web scraping )
+    db.read_from_db(columns='name', table='Players', where=('name', 'Barboza Facundo')) # TODO read by user command line.
+    db.close_connect_db()
 
     return
 
