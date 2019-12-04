@@ -70,7 +70,7 @@ class CountryScraper(object):
             country_list.append('-'.join(i.text.split()).lower())
         country_list = country_list[7:-8]
 
-        url_list = self.example_urls(country_list)
+        url_list = self.example_leagues(country_list)
 
         return url_list
 
