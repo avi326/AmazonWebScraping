@@ -6,15 +6,14 @@ Database class:
 Author: Avi Barazani & Tal Toledano
 """
 
+# TODO: handle duplicate insert values.
+
 import mysql.connector
 import pandas as pd
 import os
 
-CSV_File = 'Players Stats example.csv'
+CSV_File = 'Players Stats.csv'
 MYSQL_USERNAME = 'root'
-PARENT_DIR = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-os.chdir(PARENT_DIR)
-
 
 class Database:
     def __init__(self):
