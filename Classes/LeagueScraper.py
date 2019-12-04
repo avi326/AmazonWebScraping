@@ -9,7 +9,8 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
 import requests
-from constants import *
+from Constants import *
+
 
 class LeagueScraper:
     def __init__(self, url):

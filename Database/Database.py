@@ -79,7 +79,7 @@ class Database:
         self.con.commit()
 
     def read_from_db(self, columns, table, where=''):
-        """ read from Mysql database by statement.
+        """ read and print from Mysql database by statement.
             params:       Columns(str),
                           Table(str),
                 optional: Where(column(str),value(str)  """

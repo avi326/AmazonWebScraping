@@ -6,6 +6,7 @@ from Classes import LeagueScraper, ClubScraper, CountriesScraper
 from Database import Database
 from tqdm import tqdm
 
+
 def main():
     # extract all urls of each premier league from each state listed on the ScoreBoard.com.
     print("Starting Scrapping leagues from each country... ")
@@ -32,9 +33,9 @@ def main():
     # convert the csv file to tables in database
     print("Convert CSV to MySQL Database. ")
     db = Database.Database()
-    # db.insert_values() #TODO insert to database by user command line (if did web scraping )
+    # db.insert_values()
     db.read_from_db(columns='name', table='Players',
-                    where=('name', 'Barboza Facundo'))  # TODO read by user command line.
+                    where=('name', 'Barboza Facundo'))
     db.close_connect_db()
     print("Done. ")
 
