@@ -75,9 +75,7 @@ class CountryScraper(object):
         return url_list
 
     def drive_exit(self):
-        """
-        closing Chrome driver
-        """
+        """ closing Chrome driver """
         self.driver.close()
 
     def get_all_leagues(self, country_list):

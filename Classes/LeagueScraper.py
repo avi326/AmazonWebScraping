@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
 import requests
-
+from constants import *
 
 class LeagueScraper:
     def __init__(self, url):
@@ -17,17 +17,16 @@ class LeagueScraper:
 
     def get_country_name(self):
         """ return: the name of country. """
-        c_idx = 1
+
         country_name = self.selenium_driver.find_element_by_class_name("tournament").find_elements(By.TAG_NAME, "a")[
-            c_idx].text.title()
+            COUNTRY_IDX].text.title()
         return country_name
 
     def get_league_name(self):
         """ return: the name of league. """
-        # l_idx = LEAGUE_IDX
-        l_idx = 2
+
         league_name = self.selenium_driver.find_element_by_class_name("tournament").find_elements(By.TAG_NAME, "a")[
-            l_idx].text.title()
+            LEAGUE_IDX].text.title()
         return league_name
 
     def get_club_urls_list(self):

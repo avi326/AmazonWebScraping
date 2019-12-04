@@ -4,7 +4,7 @@ program receives user argument and print the info under query
 
 import sys
 import argparse
-from . import ScoreBoard_WS
+# from . import ScoreBoard_WS
 import sqlite3
 import os
 import random
