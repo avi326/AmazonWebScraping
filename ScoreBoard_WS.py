@@ -5,7 +5,6 @@
 from .Classes import LeagueScraper, ClubScraper, CountriesScraper
 from tqdm import tqdm
 
-
 def main():
 
     # extract all urls of each premier league from each state listed on the ScoreBoard.com.
