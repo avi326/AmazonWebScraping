@@ -7,9 +7,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.options import Options
 import requests
 
-import configWS
 
 class GetLeagueUrls:
     def __init__(self, url):
@@ -39,7 +39,6 @@ class GetLeagueUrls:
         :returns club urls list and league name.
         """
         club_urls_list = []
-
         club_element_list = self.selenium_driver.find_elements_by_xpath("//table[@id='table-type-1']/tbody/tr")
         for club_elm in club_element_list:
             onclick_atr = club_elm.find_elements(By.TAG_NAME, "td")[1].find_element(By.TAG_NAME, "a").get_attribute(
@@ -65,7 +64,9 @@ def get_data_from_url(url):
     :param:selenium_driver function loads url
     :return object that contain all html data.
     """
-    selenium_driver = webdriver.Chrome()
+    options = Options()
+    options.headless = True
+    selenium_driver = webdriver.Chrome(chrome_options=options)
     selenium_driver.get(url)
 
     return selenium_driver

@@ -1,7 +1,7 @@
 """
 program receives user argument and print the info under query
 """
-from .new import configWS
+
 import sys
 import argparse
 from . import ScoreBoard_WS

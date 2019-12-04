@@ -1,6 +1,6 @@
 """
-    this program does web scraping from a specific football club.
-
+    this program does web scraping from a specific football club, and get
+    data for each player.
 """
 
 # import packages
@@ -9,6 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import os
 
@@ -27,14 +28,14 @@ class DataMiningFromClub:
 
         # get club name
         club_name = self.selenium_driver.find_elements_by_xpath("//*[@id='fscon']/div[1]/div[2]/div")[0].text.strip()
-
-        print("Scraping from {}, {}, {}...".format(club_name, self.league_name, self.country_name))
+        print("{} club...".format(club_name), end=" ")
 
         try:
             # finds each player from the club page
             players_list = self.selenium_driver.find_element_by_class_name('base-table').find_elements(By.CLASS_NAME,
                                                                                                        'player')
-            # TODO print message if there isn't players data.
+            if len(players_list) == 0:
+                raise ValueError()
 
             # init list for saving details
             country_list = []
@@ -77,9 +78,9 @@ class DataMiningFromClub:
                                            "Yellow Cards": yellow_cards_list,
                                            "Red Card": red_cards_list,
                                            }
-
-        except IndexError:
-            print("problem on get players stats. ")
+            print(" Done.")
+        except ValueError:
+            print("No Data for this club. ")
 
         return self.labels_with_value_dict
 
@@ -103,7 +104,9 @@ def get_data_from_url(url):
     """
     function loads url and return object that contain all html data.
     """
-    selenium_driver = webdriver.Chrome()
+    options = Options()
+    options.headless = True
+    selenium_driver = webdriver.Chrome(chrome_options=options)
     selenium_driver.get(url)
 
     return selenium_driver
