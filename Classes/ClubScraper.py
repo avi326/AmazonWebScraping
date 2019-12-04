@@ -1,39 +1,40 @@
 """
-this program does web scraping and extract data from specific football club.
+    this program does web scraping from a specific football club.
+
 """
 
 # import packages
-from bs4 import BeautifulSoup as soup  # HTML data structure
-import requests
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 import pandas as pd
 import os
 
 
 class DataMiningFromClub:
     def __init__(self, url, league_name, country_name):
-        self.page_soup = get_html_from_url(url)
+        self.selenium_driver = get_data_from_url(url)
         self.labels_with_value_dict = {}
         self.league_name = league_name
         self.country_name = country_name
 
     def get_players_data(self):
         """
-        get page soup object and take the data about each player
-        :return: dictionary labels_with_value_dict
-
+            get page soup object and take the data about each player
         """
 
         # get club name
-        self.club_name = self.page_soup.find("div", {"class": "team-name"}).text.strip()
+        club_name = self.selenium_driver.find_elements_by_xpath("//*[@id='fscon']/div[1]/div[2]/div")[0].text.strip()
 
-        print("Scraping from {}, {}, {}...".format(self.club_name, self.league_name, self.country_name))
+        print("Scraping from {}, {}, {}...".format(club_name, self.league_name, self.country_name))
 
         try:
             # finds each player from the club page
-            get_table_elm = self.page_soup.findAll("table", {"class": "base-table squad-table"})
-
-            players_table = get_table_elm[0]
-            players_list = players_table.tbody.findAll("tr", {"class": "player"})
+            players_list = self.selenium_driver.find_element_by_class_name('base-table').find_elements(By.CLASS_NAME,
+                                                                                                       'player')
+            # TODO print message if there isn't players data.
 
             # init list for saving details
             country_list = []
@@ -52,15 +53,17 @@ class DataMiningFromClub:
             for player in players_list:
                 country_list.append(self.country_name)
                 league_list.append(self.league_name)
-                club_name_list.append(self.club_name)
-                jersey_numbers_list.append(player.find("td", {"class": "jersey-number"}).text)
-                nationals_list.append(player.find("td", {"class": "player-name"}).span.get("title"))
-                names_list.append(player.find("td", {"class": "player-name"}).text)
-                ages_list.append(player.find("td", {"class": "player-age"}).text)
-                matches_played_list.append(player.findAll("td")[3].text)
-                goals_list.append(player.findAll("td")[4].text)
-                yellow_cards_list.append(player.findAll("td")[5].text)
-                red_cards_list.append(player.findAll("td")[6].text)
+                club_name_list.append(club_name)
+                jersey_numbers_list.append(player.find_element_by_class_name('jersey-number').text)
+                nationals_list.append(
+                    player.find_element_by_class_name('player-name').find_element(By.TAG_NAME, 'span').get_attribute(
+                        'title'))
+                names_list.append(player.find_element_by_class_name('player-name').text)
+                ages_list.append(player.find_element_by_class_name('player-age').text)
+                matches_played_list.append(player.find_elements_by_tag_name('td')[3].text)
+                goals_list.append(player.find_elements_by_tag_name('td')[4].text)
+                yellow_cards_list.append(player.find_elements_by_tag_name('td')[5].text)
+                red_cards_list.append(player.find_elements_by_tag_name('td')[6].text)
 
             self.labels_with_value_dict = {"Country": country_list,
                                            "League": league_list,
@@ -75,16 +78,14 @@ class DataMiningFromClub:
                                            "Red Card": red_cards_list,
                                            }
 
-        except IndexError as meg:  # selenium.common.exceptions.NoSuchElementException, IndexError:
+        except IndexError:
             print("problem on get players stats. ")
-            # print(meg)
 
         return self.labels_with_value_dict
 
     def output_to_csv(self):
         """
-        get the players data and output to csv file
-        return also dataframe
+            get the players data and output to csv file
         """
         # create CSV file by pandas
         df = pd.DataFrame(self.labels_with_value_dict)
@@ -95,34 +96,14 @@ class DataMiningFromClub:
                 df.to_csv(csv_file_name)
             else:  # else it exists so append without writing the header
                 df.to_csv(csv_file_name, mode='a', header=False)
-        return df
+        return
 
 
-def get_html_from_url(url):
+def get_data_from_url(url):
     """
-    :returns bs4 object that contain html data
+    function loads url and return object that contain all html data.
     """
-    # TODO timeout int list
+    selenium_driver = webdriver.Chrome()
+    selenium_driver.get(url)
 
-    # headers setup
-    headers = {
-        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.87 Safari/537.36',
-        'referrer': 'https://google.com',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Pragma': 'no-cache',
-    }
-
-    # URl to web scrap from.
-    # scrap from scoreboard.com (football statistics website)
-    page_url = URL
-
-    # opens the connection and downloads html page from url
-    u_client = requests.get(page_url, headers=headers, timeout=5)
-
-    # parses html into a soup data structure to traverse html
-    page_soup = soup(u_client.text, "html.parser")
-    u_client.close()
-
-    return page_soup
+    return selenium_driver
