@@ -2,7 +2,8 @@
     this program call all relevant classes to scrap main url and print stat to file
 """
 
-from .Classes import LeagueScraper, ClubScraper, CountriesScraper
+from Classes import LeagueScraper, ClubScraper, CountriesScraper
+from Database import Database
 from tqdm import tqdm
 
 def main():
@@ -13,9 +14,9 @@ def main():
     # get club list for each state
     for url in tqdm(urls):
         league_to_scraping = LeagueScraper.GetLeagueUrls(url)
-        premier_league_clubs = league_to_scraping.get_club_urls_list()
         league_name = league_to_scraping.get_league_name()
         country_name = league_to_scraping.get_country_name()
+        premier_league_clubs = league_to_scraping.get_club_urls_list()
 
         # get data for each player in this club
         for club in premier_league_clubs:
@@ -23,7 +24,13 @@ def main():
             temp_club.get_players_data()
             temp_club.output_to_csv()
 
-    return temp_club.get_players_data(), temp_club.output_to_csv()
+    # convert the csv file to tables in database
+    db = Database.Database()
+    # db.insert_values() #TODO insert to database by user command line (if did web scraping )
+    db.read_from_db(columns='name', table='Players', where=('name', 'Barboza Facundo')) # TODO read by user command line.
+    db.close_connect_db()
+
+    return
 
 
 if __name__ == "__main__":

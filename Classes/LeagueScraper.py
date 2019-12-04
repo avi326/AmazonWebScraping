@@ -3,7 +3,12 @@ this program split urls to each specific football club/league/country.
 """
 
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
+import requests
+
 import configWS
 
 class GetLeagueUrls:
@@ -40,7 +45,10 @@ class GetLeagueUrls:
             onclick_atr = club_elm.find_elements(By.TAG_NAME, "td")[1].find_element(By.TAG_NAME, "a").get_attribute(
                 "onclick")
             url_of_club = onclick_atr.split("'/")[1].split(r"\'")[0][:-3]
-            club_urls_list.append("https://www.scoreboard.com/" + url_of_club)
+            full_url_of_club = "https://www.scoreboard.com/" + url_of_club + "squad"
+            club_urls_list.append(full_url_of_club)
+            if check_have_squad(full_url_of_club):
+                club_urls_list.append(full_url_of_club)
 
         return club_urls_list
 
@@ -61,3 +69,12 @@ def get_data_from_url(url):
     selenium_driver.get(url)
 
     return selenium_driver
+
+
+def check_have_squad(url):
+    """ checks if the club contains data about the players """
+    checked_url = requests.get(url)
+    if checked_url.status_code == 200:
+        return True
+    else:
+        return False
