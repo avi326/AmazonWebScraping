@@ -8,6 +8,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 import requests
+from selenium.webdriver.chrome.options import Options
 
 import configWS
 
@@ -65,7 +66,10 @@ def get_data_from_url(url):
     :param:selenium_driver function loads url
     :return object that contain all html data.
     """
-    selenium_driver = webdriver.Chrome()
+
+    options = Options()
+    options.headless = True  # disable open website.
+    selenium_driver = webdriver.Chrome(chrome_options=options)
     selenium_driver.get(url)
 
     return selenium_driver

@@ -11,6 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 import pandas as pd
 import os
+from selenium.webdriver.chrome.options import Options
 
 
 class DataMiningFromClub:
@@ -103,7 +104,9 @@ def get_data_from_url(url):
     """
     function loads url and return object that contain all html data.
     """
-    selenium_driver = webdriver.Chrome()
+    options = Options()
+    options.headless = True  # disable open website.
+    selenium_driver = webdriver.Chrome(chrome_options=options)
     selenium_driver.get(url)
 
     return selenium_driver
