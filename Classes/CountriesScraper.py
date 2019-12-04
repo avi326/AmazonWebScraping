@@ -2,7 +2,7 @@
 this program extract urls for each country and premier leagues.
 """
 
-# import configWS
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -32,7 +32,7 @@ class SBScraper(object):
         self.league = league
         self.team = team
         self.url = URL
-        self.driver = webdriver.Chrome(executable_path='/Applications/chromedriver 2', options=chrome_options)
+        self.driver = webdriver.Chrome(options=chrome_options)
         self.delay = 5
         self.sub_url = f"{self.url}{country}/{league}/{team}"
         self.driver.get(self.url)
@@ -67,36 +67,41 @@ class SBScraper(object):
         :returns list of urls for further scrapping
         """
 
+
         country_list = []
+        url_list = []
         el = self.driver.find_elements_by_xpath('//a[contains(@href,"/en/soccer/")]')
         for i in el:
             country_list.append('-'.join(i.text.split()).lower())
         country_list = country_list[7:-8]
 
-        lmenu = []
-        for i in self.soup.find_all('ul', class_='menu-left')[2:]:
-            for j in i.find_all('li'):
-                lmenu.append(j['id'])
+        #
+        # lmenu = []
+        # for i in self.soup.find_all('ul', class_='menu-left')[2:]:
+        #     for j in i.find_all('li'):
+        #         lmenu.append(j['id'])
+        #
+        # links = []
+        # for l in lmenu:
+        #     self.driver.find_element_by_xpath(f"//li[@id='{l}']").click()
+        #     time.sleep(5)
+        #     links.append(
+        #         self.driver.find_element_by_class_name('last').find_element_by_xpath(f'//*[@id="{l}"]/ul/li/a'))
+        # for link in links:
+        #     url_list.append(link.get_attribute('href'))
+        # url_list = url_list[:-8]
 
-        url_list = []
-        links = []
-        for l in lmenu:
-            self.driver.find_element_by_xpath(f"//li[@id='{l}']").click()
-            time.sleep(5)
-            links.append(
-                self.driver.find_element_by_class_name('last').find_element_by_xpath(f'//*[@id="{l}"]/ul/li/a'))
-        for link in links:
-            url_list.append(link.get_attribute('href'))
 
-        # leagues_america = ['Premier-League', 'Canadian-Premier-League', 'Primera-Division', 'LDF', 'Primera-Division',
-        #                    'Liga-Nacional', 'Championnat-National', 'liga-nacional', 'Premier-League', 'Liga-MX',
-        #                    'Liga-Primera', 'LPF', 'Pro-League', 'MLS', 'Superliga', 'Division-di-Honor',
-        #                    'Division-Profesional', 'Serie-A', 'Primera-Division', 'Liga-Aguila', 'Liga-Pro',
-        #                    'Primera-Division', 'Liga-1', 'Primera-Division', 'Primera-Division']
-        # for i in range(len(links)):
-        #     url_list.append(self.url + country_list[i] + '/' + leagues_america[i].lower())
+        leagues_america = ['Premier-League', 'Canadian-Premier-League', 'Primera-Division', 'LDF', 'Primera-Division',
+                           'Liga-Nacional', 'Championnat-National', 'liga-nacional', 'Premier-League', 'Liga-MX',
+                           'Liga-Primera', 'LPF', 'Pro-League', 'MLS', 'Superliga', 'Division-di-Honor',
+                           'Division-Profesional', 'Serie-A', 'Primera-Division', 'Liga-Aguila', 'Liga-Pro',
+                           'Primera-Division', 'Liga-1', 'Primera-Division', 'Primera-Division']
 
-        return url_list[:-8], country_list
+        for i in range(len(leagues_america)):
+            url_list.append(self.url + country_list[i] + '/' + leagues_america[i].lower())
+
+        return url_list
 
     def drive_exit(self):
         """
