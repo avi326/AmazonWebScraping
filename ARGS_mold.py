@@ -8,69 +8,56 @@ import argparse
 import os
 import random
 import tqdm
+import pandas as pd
 
-REQUIRED_NUM_OF_ARGS = 2 or 3
+REQUIRED_NUM_OF_ARGS = 3
 ARG_OPTION = 0
 ARG_NAME = 1
 # ARG_FILE_NAME = -1
 # print(PRINT)
+path = '/Users/tal/Dropbox/ITC/Git/WS_Proj/ScoreBoardWebScraping/Database/stats.csv'
 
-
-def get_stats(option, name):
-    """
-    function gets arg from user and returns relevant info
-    """
-    # option = queries[ARG_OPTION]
-    # name = queries[ARG_NAME]
-
-    FILE = 'name of file'
-    CLASS = 'name of class'
-    args = 'name of country/club/player'
-
-    func_dict = {'players': 1,#FILE.CLASS.get_players_data(),
-                 'clubs': 1,#FILE.CLASS.get_club_data(),
-                 'countries': name}#.FILE.CLASS.get_country_data()}
-
-    return func_dict[option]
-
-
-def checker():
-    return lambda x: str(x)
+DATA = pd.read_csv(path)
 
 
 def main():
-    # Parse arguments
     parser = argparse.ArgumentParser(description="Print Soccer (country|club|player) stats following CL args")
-
-    parser.add_argument("query", nargs='+', help="Choose your query you like to check", choices={'countries', 'clubs', 'players'})
-    parser.add_argument("name", help="Choose specific name for your summary stats you like to check",
-                        action="store_true")
+    parser.add_argument("query", nargs='+', type=str, help="Choose your query you like to check")
     args = parser.parse_args()
 
+    NAME = args.query[ARG_NAME]
+    QUERY = args.query[ARG_OPTION]
+
+    # Parse arguments
     if len(sys.argv) != REQUIRED_NUM_OF_ARGS:
         print("usage: ./FILE.py {query name}")
         sys.exit(1)
-    print(args.query)
-    # checking inputs valid value
-    if ''.join(args.query) not in ['countries', 'clubs', 'players']:
-        err = 'please provide a valid query to look into, as stats for [countries|clubs|players].'
-        raise Exception(err)
 
-    if not args.name:
-        err = f'please provide a valid name from {args.query} to look into'
-        raise Exception(err)
+    # checking inputs valid value
+    if QUERY not in ['Country', 'Club Name', 'Name']:
+        print('please provide a valid query to look into, as stats for [countries|clubs|players].')
+
+    if not NAME:
+        print(f'please provide a valid name for query to look into')
 
     # call function to print query
-    if args.query:
-        try:
-            print(get_stats(args.query, args.name))
-        except:
-            err = "usage: ./FILE.py { [query] | -name } "
-            raise Exception(err)
-    # if args.name:
-    #     result = get_stats(args.name)
-    #     print(result)
+    print(f'Stats for the {QUERY}-{NAME}/n{DATA[DATA[QUERY].str.contains(NAME.title())]}\n')
 
 
 if __name__ == '__main__':
     main()
+
+# in need to write to DB
+"""for kind, options in DATA.items():
+        if kind == 'Country':
+            parser.add_argument('-c', '--country', nargs='+', help=f'Choose name of country.\
+                             syntax: "name surname". options: {DATA[DATA["Country"].str.contains(options)]}')
+        elif kind == 'Club Name':
+            parser.add_argument('-l', '--leagues', nargs='+', help=f'Choose name of leagues.\
+                             syntax: "name". options: {DATA[DATA["Club Name"].str.contains(options)]}')
+        elif kind == 'Name':
+            parser.add_argument('-p', '--players', nargs='+', help=f'Choose name of players.\
+                     syntax: "name surname". options: {DATA[DATA["Name"].str.contains(options)]}')"""
+
+# parser.add_argument('-c', '--mysqlcreds', nargs='+', help='username and password for mySQL server: username password')
+# parser.add_argument('-i', '--information', nargs='+', help=GV.information_to_show_help)
