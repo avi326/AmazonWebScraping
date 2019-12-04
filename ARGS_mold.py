@@ -90,21 +90,4 @@ else:
     print("unknown option: " + option)
     sys.exit(1)
 
-parser = argparse.ArgumentParser(description='scrape profiles from OkCupid')
-parser.add_argument('mode', type=str, help=GV.mode_help)
-parser.add_argument('-n', '--num', type=str, help='number of profiles to scrape for each profile type')
-for kind, options in DICT_DATA.items():
-    if kind == 'Religion':
-        parser.add_argument('-rl', '--religioness', nargs='+', help='Religion to query based on.\
-                     syntax: "label1 label2 label3". options: {}'.format(DICT_DATA['Religion']))
-    elif kind == 'Looking_for_connection':
-        parser.add_argument('-lfc', '--connection_type', nargs='+', help='connection type to query based on.\
-                     syntax: "label1 label2 label3". options: {}'.format(kind, DICT_DATA['Looking_for_connection']))
-    else:
-        parser.add_argument('-{}'.format(kind[0:3]), '--{}'.format(kind), nargs='+', help='{} to query based on.\
-         syntax: "label1 label2 label3". options: {}'.format(kind, DICT_DATA[kind]))
-parser.add_argument('-p', '--number_of_pics', nargs='+', help='number of pics in the profile, as a range: min max')
-parser.add_argument('-a', '--age', nargs='+', help='age of the profile, as a range: min max')
-parser.add_argument('-c', '--mysqlcreds', nargs='+', help='username and password for mySQL server: username password')
-parser.add_argument('-i', '--information', nargs='+', help=GV.information_to_show_help)
-args = parser.parse_args()
+
