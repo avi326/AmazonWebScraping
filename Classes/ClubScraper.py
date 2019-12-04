@@ -1,6 +1,6 @@
 """
     this program does web scraping from a specific football club.
-
+    all players data is scrapping.
 """
 
 # import packages
@@ -14,12 +14,24 @@ import pandas as pd
 import os
 
 
-class DataMiningFromClub:
+class ClubScraper:
     def __init__(self, url, league_name, country_name):
         self.selenium_driver = get_data_from_url(url)
         self.labels_with_value_dict = {}
         self.league_name = league_name
         self.country_name = country_name
+        # init list for saving details
+        self.country_list = []
+        self.league_list = []
+        self.club_name_list = []
+        self.jersey_numbers_list = []
+        self.nationals_list = []
+        self.names_list = []
+        self.ages_list = []
+        self.matches_played_list = []
+        self.goals_list = []
+        self.yellow_cards_list = []
+        self.red_cards_list = []
 
     def get_players_data(self):
         """
@@ -29,7 +41,6 @@ class DataMiningFromClub:
         # get club name
         club_name = self.selenium_driver.find_elements_by_xpath("//*[@id='fscon']/div[1]/div[2]/div")[0].text.strip()
         print("{} club...".format(club_name), end=" ")
-
         try:
             # finds each player from the club page
             players_list = self.selenium_driver.find_element_by_class_name('base-table').find_elements(By.CLASS_NAME,
@@ -37,52 +48,46 @@ class DataMiningFromClub:
             if len(players_list) == 0:
                 raise ValueError()
 
-            # init list for saving details
-            country_list = []
-            league_list = []
-            club_name_list = []
-            jersey_numbers_list = []
-            nationals_list = []
-            names_list = []
-            ages_list = []
-            matches_played_list = []
-            goals_list = []
-            yellow_cards_list = []
-            red_cards_list = []
-
-            # iterate over the stats for each player
-            for player in players_list:
-                country_list.append(self.country_name)
-                league_list.append(self.league_name)
-                club_name_list.append(club_name)
-                jersey_numbers_list.append(player.find_element_by_class_name('jersey-number').text)
-                nationals_list.append(
-                    player.find_element_by_class_name('player-name').find_element(By.TAG_NAME, 'span').get_attribute(
-                        'title'))
-                names_list.append(player.find_element_by_class_name('player-name').text)
-                ages_list.append(player.find_element_by_class_name('player-age').text)
-                matches_played_list.append(player.find_elements_by_tag_name('td')[3].text)
-                goals_list.append(player.find_elements_by_tag_name('td')[4].text)
-                yellow_cards_list.append(player.find_elements_by_tag_name('td')[5].text)
-                red_cards_list.append(player.find_elements_by_tag_name('td')[6].text)
-
-            self.labels_with_value_dict = {"Country": country_list,
-                                           "League": league_list,
-                                           "Club Name": club_name_list,
-                                           "Jersey Number": jersey_numbers_list,
-                                           "National": nationals_list,
-                                           "Name": names_list,
-                                           "Age": ages_list,
-                                           "Matched Played": matches_played_list,
-                                           "Goals": goals_list,
-                                           "Yellow Cards": yellow_cards_list,
-                                           "Red Card": red_cards_list,
-                                           }
+            self.scrap_players_data(self, players_list, club_name)
+            self.labels_with_value_dict = self.put_data_in_nested_dict()
             print(" Done.")
+
         except ValueError:
             print("No Data for this club. ")
 
         return self.labels_with_value_dict
+
+    def scrap_players_data(self, players_list, club_name):
+        # iterate over the stats for each player
+        for player in players_list:
+            self.country_list.append(self.country_name)
+            self.league_list.append(self.league_name)
+            self.club_name_list.append(club_name)
+            self.jersey_numbers_list.append(player.find_element_by_class_name('jersey-number').text)
+            self.nationals_list.append(
+                player.find_element_by_class_name('player-name').find_element(By.TAG_NAME, 'span').get_attribute(
+                    'title'))
+            self.names_list.append(player.find_element_by_class_name('player-name').text)
+            self.ages_list.append(player.find_element_by_class_name('player-age').text)
+            self.matches_played_list.append(player.find_elements_by_tag_name('td')[3].text)
+            self.goals_list.append(player.find_elements_by_tag_name('td')[4].text)
+            self.yellow_cards_list.append(player.find_elements_by_tag_name('td')[5].text)
+            self.red_cards_list.append(player.find_elements_by_tag_name('td')[6].text)
+
+    def put_data_in_nested_dict(self):
+        labels_with_value_dict = {"Country": self.country_list,
+                                  "League": self.league_list,
+                                  "Club Name": self.club_name_list,
+                                  "Jersey Number": self.jersey_numbers_list,
+                                  "National": self.nationals_list,
+                                  "Name": self.names_list,
+                                  "Age": self.ages_list,
+                                  "Matched Played": self.matches_played_list,
+                                  "Goals": self.goals_list,
+                                  "Yellow Cards": self.yellow_cards_list,
+                                  "Red Card": self.red_cards_list,
+                                  }
+        return labels_with_value_dict
 
     def output_to_csv(self):
         """

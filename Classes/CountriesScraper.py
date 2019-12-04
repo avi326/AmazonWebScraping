@@ -2,7 +2,6 @@
 this program extract urls for each country and premier leagues.
 """
 
-
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -11,10 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 import requests
 import time
-
-URL = 'https://www.scoreboard.com/en/soccer/'
-COUNTRY_IDX = 1
-URL_IDX = 0
+from constants import *
 
 chrome_options = Options()
 chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -22,7 +18,7 @@ chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--headless")
 
 
-class SBScraper(object):
+class CountryScraper(object):
     """
     class will get from CL (or elsewhere) name of country team or league and will get the stats of game or player '''
     """
@@ -45,7 +41,7 @@ class SBScraper(object):
         and debug url string that varies between countries.
         """
 
-        links = self.extract_urls()[URL_IDX]
+        links = self.extract_urls()
         for i in range(len(links)):
             try:
                 self.driver.get(links[i])
@@ -63,10 +59,9 @@ class SBScraper(object):
     def extract_urls(self):
         """
         loop through html and extract countries and links for primer league
-        :param url, country (list)
-        :returns list of urls for further scrapping
+            Params: url, country (list)
+            Return: list of urls for further scrapping
         """
-
 
         country_list = []
         url_list = []
@@ -75,31 +70,7 @@ class SBScraper(object):
             country_list.append('-'.join(i.text.split()).lower())
         country_list = country_list[7:-8]
 
-        #
-        # lmenu = []
-        # for i in self.soup.find_all('ul', class_='menu-left')[2:]:
-        #     for j in i.find_all('li'):
-        #         lmenu.append(j['id'])
-        #
-        # links = []
-        # for l in lmenu:
-        #     self.driver.find_element_by_xpath(f"//li[@id='{l}']").click()
-        #     time.sleep(5)
-        #     links.append(
-        #         self.driver.find_element_by_class_name('last').find_element_by_xpath(f'//*[@id="{l}"]/ul/li/a'))
-        # for link in links:
-        #     url_list.append(link.get_attribute('href'))
-        # url_list = url_list[:-8]
-
-
-        leagues_america = ['Premier-League', 'Canadian-Premier-League', 'Primera-Division', 'LDF', 'Primera-Division',
-                           'Liga-Nacional', 'Championnat-National', 'liga-nacional', 'Premier-League', 'Liga-MX',
-                           'Liga-Primera', 'LPF', 'Pro-League', 'MLS', 'Superliga', 'Division-di-Honor',
-                           'Division-Profesional', 'Serie-A', 'Primera-Division', 'Liga-Aguila', 'Liga-Pro',
-                           'Primera-Division', 'Liga-1', 'Primera-Division', 'Primera-Division']
-
-        for i in range(len(leagues_america)):
-            url_list.append(self.url + country_list[i] + '/' + leagues_america[i].lower())
+        url_list = self.example_urls(country_list)
 
         return url_list
 
@@ -109,11 +80,42 @@ class SBScraper(object):
         """
         self.driver.close()
 
+    def get_all_leagues(self, country_list):
+        """ get all the leagues urls from the website. takes a lot time. """
+        url_list = []
+        lmenu = []
+        for i in self.soup.find_all('ul', class_='menu-left')[2:]:
+            for j in i.find_all('li'):
+                lmenu.append(j['id'])
+
+        links = []
+        for l in lmenu:
+            self.driver.find_element_by_xpath(f"//li[@id='{l}']").click()
+            time.sleep(5)
+            links.append(
+                self.driver.find_element_by_class_name('last').find_element_by_xpath(f'//*[@id="{l}"]/ul/li/a'))
+        for link in links:
+            url_list.append(link.get_attribute('href'))
+        return url_list[:-8]
+
+    def example_leagues(self, country_list):
+        """ get some leagues urls from the website. good for check the scrapper because is fast. """
+
+        leagues_america = ['Premier-League', 'Canadian-Premier-League', 'Primera-Division', 'LDF', 'Primera-Division',
+                           'Liga-Nacional', 'Championnat-National', 'liga-nacional', 'Premier-League', 'Liga-MX',
+                           'Liga-Primera', 'LPF', 'Pro-League', 'MLS', 'Superliga', 'Division-di-Honor',
+                           'Division-Profesional', 'Serie-A', 'Primera-Division', 'Liga-Aguila', 'Liga-Pro',
+                           'Primera-Division', 'Liga-1', 'Primera-Division', 'Primera-Division']
+
+        for i in range(len(leagues_america)):
+            url_list = []
+            url_list.append(self.url + country_list[i] + '/' + leagues_america[i].lower())
+            return url_list
+
 
 def main():
-    scraper = SBScraper()
-    urls = scraper.extract_urls()[URL_IDX]
-    # countries = scraper.extract_urls()[COUNTRY_IDX]
+    scraper = CountryScraper()
+    urls = scraper.extract_urls()
 
     print(urls)
 

@@ -9,12 +9,12 @@ from tqdm import tqdm
 def main():
     # extract all urls of each premier league from each state listed on the ScoreBoard.com.
     print("Starting Scrapping leagues from each country... ")
-    urls = CountriesScraper.SBScraper().extract_urls()
+    urls = CountriesScraper.CountryScraper().extract_urls()
     print("Done! ")
 
     # get club list for each state
     for url in tqdm(urls):
-        league_to_scraping = LeagueScraper.GetLeagueUrls(url)
+        league_to_scraping = LeagueScraper.LeagueScraper(url)
         league_name = league_to_scraping.get_league_name()
         country_name = league_to_scraping.get_country_name()
         print("### Scrapping {} from {} ###".format(league_name, country_name))
@@ -23,7 +23,7 @@ def main():
 
         # get data for each player in this club
         for club in premier_league_clubs:
-            temp_club = ClubScraper.DataMiningFromClub(club, league_name, country_name)
+            temp_club = ClubScraper.ClubScraper(club, league_name, country_name)
             temp_club.get_players_data()
             temp_club.output_to_csv()
 
