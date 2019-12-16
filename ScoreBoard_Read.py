@@ -34,8 +34,9 @@ def main():
 
     # call function to print query
     db = Database.Database()
-    db.read_from_db(columns='*', table='Players',
+    result = db.read_from_db(columns='*', table='Players',
                     where=(where_column, where_value))  # TODO read by user command line.
+    print(result)
     db.close_connect_db()
 
 

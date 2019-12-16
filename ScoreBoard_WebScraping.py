@@ -30,15 +30,6 @@ def main():
 
         print("### Done! ###".format(league_name, country_name))
 
-    # convert the csv file to tables in database
-    print("Convert CSV to MySQL Database. ")
-    db = Database.Database()
-    # db.insert_values()
-    db.read_from_db(columns='name', table='Players',
-                    where=('name', 'Barboza Facundo'))
-    db.close_connect_db()
-    print("Done. ")
-
     return
 
 

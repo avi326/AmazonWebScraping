@@ -78,6 +78,34 @@ class Database:
             self.cur.execute(sql, val)
         self.con.commit()
 
+    def insert_data_from_api(self, player_id, source_name, images, categories):
+        """ from api, insert data to mysql
+
+        Args:
+            1) player id from 'players' table from DB
+            2) the api website
+            3) image urls of the player
+            4) some terms that connect to the player
+        """
+
+        # add data to Image table
+        for img in images:
+            sql = """INSERT IGNORE INTO Images
+                    (image_id, player_id, source, image_url)
+                    VALUES (%s, %s, %s, %s)"""
+            val = (None, player_id, source_name, img)
+            self.cur.execute(sql, val)
+
+        # add data to Categories table
+        for cat in categories:
+            sql = """INSERT IGNORE INTO Categories
+                    (cat_id, player_id, source, category)
+                    VALUES (%s, %s, %s, %s)"""
+            val = (None, player_id, source_name, cat)
+            self.cur.execute(sql, val)
+        self.con.commit()
+
+
     def read_from_db(self, columns, table, where=''):
         """ read and print from Mysql database by statement.
             params:       Columns(str),
@@ -90,8 +118,8 @@ class Database:
             self.cur.execute("SELECT {} FROM {} ".format(columns, table))
 
         result = self.cur.fetchall()
-        for x in result:
-            print(x)
+
+        return result
 
 
 ########### static functions ############
@@ -159,6 +187,20 @@ def create_tables(cur, con):
       `red_cards` int
     );
 
+    CREATE TABLE `Images` (
+  `image_id` int PRIMARY KEY AUTO_INCREMENT,
+  `player_id` int,
+  `source` varchar(255),
+  `image_url` varchar(255)
+    );
+
+    CREATE TABLE `Categories` (
+      `cat_id` int PRIMARY KEY AUTO_INCREMENT,
+      `player_id` int,
+      `source` varchar(255),
+      `category` varchar(255)
+    );
+    
     ALTER TABLE `Players` ADD FOREIGN KEY (`club_played`) REFERENCES `Clubs` (`name`);
 
     ALTER TABLE `Countries` ADD FOREIGN KEY (`name`) REFERENCES `Leagues` (`country`);
@@ -166,6 +208,10 @@ def create_tables(cur, con):
     ALTER TABLE `Clubs` ADD FOREIGN KEY (`league_played`) REFERENCES `Leagues` (`name`);
 
     ALTER TABLE `Countries` ADD FOREIGN KEY (`name`) REFERENCES `Players` (`nationality`);
+     
+    ALTER TABLE `Images` ADD FOREIGN KEY (`player_id`) REFERENCES `Players` (`player_id`);
+
+    ALTER TABLE `Categories` ADD FOREIGN KEY (`player_id`) REFERENCES `Players` (`player_id`);
      '''
     cur.execute(sql, multi=True)
     con.commit()
