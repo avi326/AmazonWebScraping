@@ -13,3 +13,7 @@ ARG_FILE_NAME = -1
 URL_IDX = 0
 PRINT = -1
 DELAY = 2
+
+### database ###
+CSV_File = 'Players Stats.csv'
+MYSQL_USERNAME = 'root'

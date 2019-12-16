@@ -10,10 +10,8 @@ Author: Avi Barazani & Tal Toledano
 
 import mysql.connector
 import pandas as pd
-import os
+from Constants import *
 
-CSV_File = 'Players Stats.csv'
-MYSQL_USERNAME = 'root'
 
 class Database:
     def __init__(self):
@@ -104,7 +102,6 @@ class Database:
             val = (None, player_id, source_name, cat)
             self.cur.execute(sql, val)
         self.con.commit()
-
 
     def read_from_db(self, columns, table, where=''):
         """ read and print from Mysql database by statement.

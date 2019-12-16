@@ -37,6 +37,10 @@ def main():
     db.insert_all_to_mysql()
     db.close_connect_db()
     print("Done. ")
+
+    # add more data to db from api
+    AddDataFromAPI.get_data_for_all_players()
+
     return
 
 
