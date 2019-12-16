@@ -4,6 +4,7 @@
 
 from Classes import LeagueScraper, ClubScraper, CountriesScraper
 from Database import Database
+from DatafromAPI import AddDataFromAPI
 from tqdm import tqdm
 
 
@@ -30,6 +31,12 @@ def main():
 
         print("### Done! ###".format(league_name, country_name))
 
+    # convert the csv file to tables in database
+    print("Convert CSV to MySQL Database. ")
+    db = Database.Database()
+    db.insert_all_to_mysql()
+    db.close_connect_db()
+    print("Done. ")
     return
 
 
