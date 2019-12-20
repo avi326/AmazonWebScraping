@@ -70,9 +70,9 @@ class Database:
             sql = """INSERT IGNORE INTO Players
                     (player_id, name, club_played, nationality, jersey_Number, age,
                      matched_played, goals, yellow_cards, red_cards) 
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             val = (None, r['Name'], r['Club Name'], r['National'], r['Jersey Number'], r['Age'], \
-                   r['Matched Played'], r['Goals'], r['Yellow Cards'], r['Red Card'])
+                   r['Matched Played'], r['Goals'], r['Yellow Cards'], r['Red Card'], r['Date'])
             self.cur.execute(sql, val)
         self.con.commit()
 
@@ -134,70 +134,93 @@ def setup_mysql_db():
 
     con = mysql.connector.connect(
         host='localhost', user=MYSQL_USERNAME, use_pure=True, auth_plugin='mysql_native_password')
-    cur = con.cursor()
 
     # create if don't exists:
-    create_database(cur, con)
-    create_tables(cur, con)
-    return con, cur
+    create_database(con)
+    create_tables(con)
+
+    return con, con.cursor()
 
 
-def create_database(cur, con):
+def create_database(con):
     """ create database if don't exists. """
-
+    cur = con.cursor()
     cur.execute(''' CREATE DATABASE IF NOT EXISTS Players_Stats''')
     cur.execute(''' USE Players_Stats ''')
     con.commit()
 
 
-def create_tables(cur, con):
+def create_tables(con):
     """ create tables if don't exists. """
 
-    sql = ''' 
-     CREATE TABLE `Countries` (
-      `country_id` int PRIMARY KEY AUTO_INCREMENT,
-      `name` varchar(255)
-    );
+    cur = con.cursor()
 
-    CREATE TABLE `Leagues` (
-      `league_id` int PRIMARY KEY AUTO_INCREMENT,
-      `name` varchar(255),
-      `country` varchar(255)
-    );
+    create_Countries = '''
+         CREATE TABLE IF NOT EXISTS `Countries` (
+         `country_id` int PRIMARY KEY AUTO_INCREMENT,
+        `name` varchar(255)
+        );
+    '''
+    cur.execute(create_Countries)
+    #############################
+    create_Leagues = '''
+            CREATE TABLE IF NOT EXISTS `Leagues` (
+          `league_id` int PRIMARY KEY AUTO_INCREMENT,
+          `name` varchar(255),
+          `country` varchar(255)
+        );
+        '''
+    cur.execute(create_Leagues)
+    #############################
+    create_Clubs = '''
+        CREATE TABLE IF NOT EXISTS `Clubs` (
+          `club_id` int PRIMARY KEY AUTO_INCREMENT,
+          `name` varchar(255),
+          `league_played` varchar(255)
+        );
 
-    CREATE TABLE `Clubs` (
-      `club_id` int PRIMARY KEY AUTO_INCREMENT,
-      `name` varchar(255),
-      `league_played` varchar(255)
-    );
+        '''
+    cur.execute(create_Clubs)
+    #############################
+    create_Players = '''
+      CREATE TABLE IF NOT EXISTS `Players` (
+          `player_id` int PRIMARY KEY AUTO_INCREMENT,
+          `name` varchar(255),
+          `club_played` varchar(255),
+          `nationality` varchar(255),
+          `jersey_Number` int,
+          `age` int,
+          `matched_played` int,
+          `goals` int,
+          `yellow_cards` int,
+          `red_cards` int,
+          `date` int
+        );
 
-    CREATE TABLE `Players` (
-      `player_id` int PRIMARY KEY AUTO_INCREMENT,
-      `name` varchar(255),
-      `club_played` varchar(255),
-      `nationality` varchar(255),
-      `jersey_Number` int,
-      `age` int,
-      `matched_played` int,
-      `goals` int,
-      `yellow_cards` int,
-      `red_cards` int
-    );
-
-    CREATE TABLE `Images` (
-  `image_id` int PRIMARY KEY AUTO_INCREMENT,
-  `player_id` int,
-  `source` varchar(255),
-  `image_url` varchar(255)
-    );
-
-    CREATE TABLE `Categories` (
-      `cat_id` int PRIMARY KEY AUTO_INCREMENT,
-      `player_id` int,
-      `source` varchar(255),
-      `category` varchar(255)
-    );
-    
+    '''
+    cur.execute(create_Players)
+    #############################
+    create_Images = '''
+            CREATE TABLE IF NOT EXISTS `Images` (
+          `image_id` int PRIMARY KEY AUTO_INCREMENT,
+          `player_id` int,
+          `source` varchar(255),
+          `image_url` varchar(255)
+            );
+    '''
+    cur.execute(create_Images)
+    #############################
+    create_Categories = '''
+            CREATE TABLE IF NOT EXISTS `Categories` (
+              `cat_id` int PRIMARY KEY AUTO_INCREMENT,
+              `player_id` int,
+              `source` varchar(255),
+              `category` varchar(255)
+            );
+    '''
+    cur.execute(create_Categories)
+    #############################
+    keys = ''' 
     ALTER TABLE `Players` ADD FOREIGN KEY (`club_played`) REFERENCES `Clubs` (`name`);
 
     ALTER TABLE `Countries` ADD FOREIGN KEY (`name`) REFERENCES `Leagues` (`country`);
@@ -205,16 +228,17 @@ def create_tables(cur, con):
     ALTER TABLE `Clubs` ADD FOREIGN KEY (`league_played`) REFERENCES `Leagues` (`name`);
 
     ALTER TABLE `Countries` ADD FOREIGN KEY (`name`) REFERENCES `Players` (`nationality`);
-     
+
     ALTER TABLE `Images` ADD FOREIGN KEY (`player_id`) REFERENCES `Players` (`player_id`);
 
     ALTER TABLE `Categories` ADD FOREIGN KEY (`player_id`) REFERENCES `Players` (`player_id`);
      '''
-    cur.execute(sql, multi=True)
+    cur.execute(keys, multi=True)
     con.commit()
 
 
 def main():
+    db = Database()
     return
 
 

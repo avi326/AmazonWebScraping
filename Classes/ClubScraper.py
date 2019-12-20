@@ -12,7 +12,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import os
-
+from datetime import datetime
 
 class ClubScraper:
     def __init__(self, url, league_name, country_name):
@@ -32,6 +32,7 @@ class ClubScraper:
         self.goals_list = []
         self.yellow_cards_list = []
         self.red_cards_list = []
+        self.date_list = []
 
     def get_players_data(self):
         """
@@ -73,6 +74,7 @@ class ClubScraper:
             self.goals_list.append(player.find_elements_by_tag_name('td')[4].text)
             self.yellow_cards_list.append(player.find_elements_by_tag_name('td')[5].text)
             self.red_cards_list.append(player.find_elements_by_tag_name('td')[6].text)
+            self.date_list.append(datetime.now().date())
 
     def put_data_in_nested_dict(self):
         labels_with_value_dict = {"Country": self.country_list,
@@ -86,6 +88,7 @@ class ClubScraper:
                                   "Goals": self.goals_list,
                                   "Yellow Cards": self.yellow_cards_list,
                                   "Red Card": self.red_cards_list,
+                                  "Date": self.date_list
                                   }
         return labels_with_value_dict
 

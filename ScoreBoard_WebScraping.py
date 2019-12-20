@@ -13,11 +13,6 @@ def main():
     urls = CountriesScraper.CountryScraper().extract_urls()
     print("Done! ")
 
-    # create new csv file for new data, if exists one, drop it.
-    csv_file_name = 'Players Stats.csv'
-    with open(csv_file_name, 'w') as f:
-        f.close()
-
     # get club list for each state
     for url in tqdm(urls):
         league_to_scraping = LeagueScraper.LeagueScraper(url)
