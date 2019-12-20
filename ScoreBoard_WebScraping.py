@@ -7,12 +7,16 @@ from Database import Database
 from DatafromAPI import AddDataFromAPI
 from tqdm import tqdm
 
-
 def main():
     # extract all urls of each premier league from each state listed on the ScoreBoard.com.
     print("Starting Scrapping leagues from each country... ")
     urls = CountriesScraper.CountryScraper().extract_urls()
     print("Done! ")
+
+    # create new csv file for new data, if exists one, drop it.
+    csv_file_name = 'Players Stats.csv'
+    with open(csv_file_name, 'w') as f:
+        f.close()
 
     # get club list for each state
     for url in tqdm(urls):
