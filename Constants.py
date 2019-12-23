@@ -1,3 +1,6 @@
+### General ###
+CHROME_DRIVER_PATH = "/usr/bin/chromedriver"
+
 ### CountriesScraper.py ###
 URL = 'https://www.scoreboard.com/en/soccer/'
 

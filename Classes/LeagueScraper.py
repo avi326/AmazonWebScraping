@@ -61,9 +61,12 @@ def get_data_from_url(url):
         Return: object that contain all html data.
     """
 
-    options = Options()
-    options.headless = True  # disable open website.
-    selenium_driver = webdriver.Chrome(chrome_options=options)
+    chrome_options = Options()
+    chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    selenium_driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=CHROME_DRIVER_PATH)
     selenium_driver.get(url)
 
     return selenium_driver

@@ -16,7 +16,7 @@ chrome_options = Options()
 chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--headless")
-
+chrome_options.add_argument("--no-sandbox")
 
 class CountryScraper(object):
     """
@@ -28,7 +28,7 @@ class CountryScraper(object):
         self.league = league
         self.team = team
         self.url = URL
-        self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver = webdriver.Chrome(options=chrome_options, executable_path=CHROME_DRIVER_PATH)
         self.delay = 5
         self.sub_url = f"{self.url}{country}/{league}/{team}"
         self.driver.get(self.url)
