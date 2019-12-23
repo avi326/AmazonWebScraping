@@ -1,5 +1,5 @@
 ### General ###
-CHROME_DRIVER_PATH = "/usr/bin/chromedriver"
+CHROME_DRIVER_PATH = "/home/ubuntu/ScoreBoardWebScraping/chromedriver"
 
 ### CountriesScraper.py ###
 URL = 'https://www.scoreboard.com/en/soccer/'
