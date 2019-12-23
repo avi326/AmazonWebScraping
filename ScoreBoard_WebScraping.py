@@ -24,9 +24,13 @@ def main():
 
         # get data for each player in this club
         for club in premier_league_clubs:
-            temp_club = ClubScraper.ClubScraper(club, league_name, country_name)
-            temp_club.get_players_data()
-            temp_club.output_to_csv()
+            try:
+                temp_club = ClubScraper.ClubScraper(club, league_name, country_name)
+                temp_club.get_players_data()
+                temp_club.output_to_csv()
+            except:
+                print("some problem to scrap ", country_name)
+            
 
         print("### Done! ###".format(league_name, country_name))
 
