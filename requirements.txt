@@ -10,6 +10,10 @@ html5lib==1.0.1
 idna==2.8
 importlib-metadata==0.23
 lxml==4.4.1
+mkl-fft==1.0.15
+mkl-random==1.1.0
+mkl-service==2.3.0
+more-itertools==7.2.0
 mysql-connector-python==8.0.18
 numpy==1.17.3
 packaging==19.2
