@@ -13,6 +13,7 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import os
 from datetime import datetime
+from Constants import *
 
 class ClubScraper:
     def __init__(self, url, league_name, country_name):
@@ -114,7 +115,7 @@ def get_data_from_url(url):
     """
     options = Options()
     options.headless = True  # disable open website.
-    selenium_driver = webdriver.Chrome(chrome_options=options)
+    selenium_driver = webdriver.Chrome(chrome_options=options, executable_path=CHROME_DRIVER_PATH)
     selenium_driver.get(url)
 
     return selenium_driver
