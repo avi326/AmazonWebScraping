@@ -15,12 +15,15 @@ def main():
 
     # get club list for each state
     for url in tqdm(urls):
-        league_to_scraping = LeagueScraper.LeagueScraper(url)
-        league_name = league_to_scraping.get_league_name()
-        country_name = league_to_scraping.get_country_name()
-        print("### Scrapping {} from {} ###".format(league_name, country_name))
+        try:
+            league_to_scraping = LeagueScraper.LeagueScraper(url)
+            league_name = league_to_scraping.get_league_name()
+            country_name = league_to_scraping.get_country_name()
+            print("### Scrapping {} from {} ###".format(league_name, country_name))
 
-        premier_league_clubs = league_to_scraping.get_club_urls_list()
+            premier_league_clubs = league_to_scraping.get_club_urls_list()
+        except Exception as e:
+            print("problem to scarp leage... :( \n", err)
 
         # get data for each player in this club
         for club in premier_league_clubs:
@@ -29,7 +32,7 @@ def main():
                 temp_club.get_players_data()
                 temp_club.output_to_csv()
             except Exception as err:
-                print("problem to scarp... :( \n", err)
+                print("problem to scarp club... :( \n", err)
 
 
         print("### Done! ###".format(league_name, country_name))
