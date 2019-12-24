@@ -28,8 +28,8 @@ def main():
                 temp_club = ClubScraper.ClubScraper(club, league_name, country_name)
                 temp_club.get_players_data()
                 temp_club.output_to_csv()
-            except:
-                print("problem to scarp... :(")
+            except Exception as err:
+                print("problem to scarp... :( \n", err)
 
 
         print("### Done! ###".format(league_name, country_name))

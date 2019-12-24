@@ -66,6 +66,7 @@ class ClubScraper:
                 self.goals_list.append(player.find_elements_by_tag_name('td')[4].text)
                 self.yellow_cards_list.append(player.find_elements_by_tag_name('td')[5].text)
                 self.red_cards_list.append(player.find_elements_by_tag_name('td')[6].text)
+                self.date_list.append(datetime.now().date())
 
             self.labels_with_value_dict = self.put_data_in_nested_dict()
             print(" Done.")
