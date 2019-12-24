@@ -22,7 +22,7 @@ def main():
             print("### Scrapping {} from {} ###".format(league_name, country_name))
 
             premier_league_clubs = league_to_scraping.get_club_urls_list()
-        except Exception as e:
+        except Exception as err:
             print("problem to scarp leage... :( \n", err)
 
         # get data for each player in this club
