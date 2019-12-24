@@ -15,6 +15,7 @@ import os
 from datetime import datetime
 from Constants import *
 
+
 class ClubScraper:
     def __init__(self, url, league_name, country_name):
         self.selenium_driver = get_data_from_url(url)
@@ -50,7 +51,22 @@ class ClubScraper:
             if len(players_list) == 0:
                 raise ValueError()
 
-            self.scrap_players_data(self, players_list, club_name)
+            # iterate over the stats for each player
+            for player in players_list:
+                self.country_list.append(self.country_name)
+                self.league_list.append(self.league_name)
+                self.club_name_list.append(club_name)
+                self.jersey_numbers_list.append(player.find_element_by_class_name('jersey-number').text)
+                self.nationals_list.append(
+                    player.find_element_by_class_name('player-name').find_element(By.TAG_NAME, 'span').get_attribute(
+                        'title'))
+                self.names_list.append(player.find_element_by_class_name('player-name').text)
+                self.ages_list.append(player.find_element_by_class_name('player-age').text)
+                self.matches_played_list.append(player.find_elements_by_tag_name('td')[3].text)
+                self.goals_list.append(player.find_elements_by_tag_name('td')[4].text)
+                self.yellow_cards_list.append(player.find_elements_by_tag_name('td')[5].text)
+                self.red_cards_list.append(player.find_elements_by_tag_name('td')[6].text)
+
             self.labels_with_value_dict = self.put_data_in_nested_dict()
             print(" Done.")
 
