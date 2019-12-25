@@ -133,7 +133,7 @@ def setup_mysql_db():
     """ connect to mysql server. and create database and tables if don't exists."""
 
     con = mysql.connector.connect(
-        host='localhost', user=MYSQL_USERNAME, use_pure=True, auth_plugin='mysql_native_password')
+        host='localhost', user=MYSQL_USERNAME, password=MYSQL_PADDWORD ,use_pure=True, auth_plugin='mysql_native_password')
 
     # create if don't exists:
     create_database(con)

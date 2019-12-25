@@ -20,3 +20,4 @@ DELAY = 2
 ### database ###
 CSV_File = 'Players Stats.csv'
 MYSQL_USERNAME = 'root'
+MYSQL_PADDWORD = '12345678'
