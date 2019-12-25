@@ -69,7 +69,7 @@ class Database:
         for i, r in df.iterrows():
             sql = """INSERT IGNORE INTO Players
                     (player_id, name, club_played, nationality, jersey_Number, age,
-                     matched_played, goals, yellow_cards, red_cards) 
+                     matched_played, goals, yellow_cards, red_cards, date) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             val = (None, r['Name'], r['Club Name'], r['National'], r['Jersey Number'], r['Age'], \
                    r['Matched Played'], r['Goals'], r['Yellow Cards'], r['Red Card'], r['Date'])
